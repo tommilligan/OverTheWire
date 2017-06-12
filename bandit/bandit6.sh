@@ -8,7 +8,7 @@ ls -laR1 / 2> /dev/null | \
 egrep "bandit7 +bandit6 +33" | \
 
 # Pull out just the filename from the long description
-sed -r "s/^.* ([^ ]+)/\1/" | \
+awk '{ print $(NF - 1) }' | \
 
 # Find file path from filename
 while read fileName; do

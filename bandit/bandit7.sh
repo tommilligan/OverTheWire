@@ -4,5 +4,4 @@
 grep "millionth" data.txt | \
 
 # Throw away the first column and return the second
-sed -r "s/^\w+\s+(\w+)$/\1/"
-
+awk '{ print $2 }'
