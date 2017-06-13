@@ -14,7 +14,7 @@ logger = logging.getLogger("otw")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setFormatter(logging.Formatter("%(name)s|%(levelname)s|%(message)s"))
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.INFO)
 logger.addHandler(ch)
 
 class OTWException(Exception):
@@ -69,7 +69,7 @@ def main():
     parser = main_parser()
     args = parser.parse_args()
     logger.debug("Got arguments {0}".format(args))
-
+    
     try:
         config = get_wargame_connection_config(args.wargame)
         if args.password:
