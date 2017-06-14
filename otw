@@ -1,3 +1,16 @@
 #!/bin/bash
 
-$(./otw.py $@)
+# Handle help seperately, as it appears on stdout with exit code 0
+for var in "$@"; do
+    if [[ "$var" == "-h" ]]; then
+        echo "$(./otw.py $@)"
+        exit 0
+    fi
+done
+
+# Otherwise, if program succeeds, execute output
+CONNECTION_COMMAND="$(./otw.py $@)"
+if [ $? -eq 0 ]; then
+    $CONNECTION_COMMAND
+fi
+
