@@ -1,4 +1,7 @@
 bandit:
     domain: bandit.labs.overthewire.org
     port: 2220
+leviathon:
+    domain: leviathon.labs.overthewire.org
+    port: 2223
 
