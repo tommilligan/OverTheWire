@@ -4,4 +4,6 @@ bandit:
 leviathon:
     domain: leviathon.labs.overthewire.org
     port: 2223
-
+krypton:
+    domain: krypton.labs.overthewire.org
+    port: 2222
