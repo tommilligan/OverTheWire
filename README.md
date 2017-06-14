@@ -33,7 +33,7 @@ To connect a new level, provide the password with the `-p` flag.
 Once the password has been given, it will automatically be recalled.
 
 ```bash
-./otw natas 5
+./otw leviathon 5
 ```
 
 Calling a level with the `-p` flag again will overwrite the old password.
