@@ -20,18 +20,37 @@ logger.addHandler(ch)
 class OTWException(Exception):
     pass
 
-def lookup_level_password(wargame, level):
-    username = "{0}{1}".format(wargame, level)
-    logger.debug("Looking up password for {0}".format(username))
-    password_path = os.path.join("passwords", wargame, username)
-    logger.debug("Password file should be at '{0}'".format(password_path))    
+def ensure_mkdir(path):
+    logger.debug("Ensuring directory '{0}' exists".format(path))
     try:
-        with open(password_path, "r") as password_fh:
-            password = password_fh.read().strip()
-            logger.debug("Retreived password '{0}'".format(password))
+        os.mkdir(path)
     except OSError as e:
-        if e.errno == 2:
-            raise OTWException("No password file found for '{0}'".format(username))
+        if e.errno != 17:
+            pass
+
+def handle_level_password(wargame, level, password):
+    username = "{0}{1}".format(wargame, level)
+    password_dir = os.path.join("passwords", wargame)
+    password_path = os.path.join(password_dir, username)
+    logger.debug("Password file at '{0}'".format(password_path))    
+        
+    if password:
+        logger.debug("Saving down password for {0}".format(username))
+        try:
+            ensure_mkdir(password_dir)
+            with open(password_path, "w") as password_fh:
+                password_fh.write(password)
+        except OSError as e:
+            logger.warn("Error saving password for '{0}'; {1}".format(username, e))
+    else:
+        logger.debug("Looking up password for {0}".format(username))
+        try:
+            with open(password_path, "r") as password_fh:
+                password = password_fh.read().strip()
+                logger.debug("Retreived password '{0}'".format(password))
+        except OSError as e:
+            if e.errno == 2:
+                raise OTWException("No password file found for '{0}'".format(username))
     return password
 
 def get_wargame_connection_config(wargame):
@@ -71,12 +90,13 @@ def main():
     logger.debug("Got arguments {0}".format(args))
     
     try:
+        # Get wargame information
         config = get_wargame_connection_config(args.wargame)
-        if args.password:
-            password = args.password
-        else:
-            password = lookup_level_password(args.wargame, int(args.level))
 
+        # Save/load password as necessary
+        password = handle_level_password(args.wargame, args.level, args.password)
+
+        # Format command
         username = "{0}{1}".format(args.wargame, args.level)
         target = "{0}@{1}".format(username, config["domain"])
         command = ' '.join(["sshpass",
