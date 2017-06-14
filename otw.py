@@ -83,6 +83,7 @@ class OTWLevel(object):
         command = ' '.join(["sshpass",
                     "-p", self.loadPassword(),
                     "ssh",
+                    "-o", "StrictHostKeyChecking=no",
                     "-p", str(self.config["port"]),
                     target])
         return command
