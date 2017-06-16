@@ -12,7 +12,7 @@ python:
   - "pypy"
   - "pypy3"
 install:
-  - pip install .[dev]
+  - pip install -r requirements-dev.txt
 script:
   - nose2 --with-coverage
 after_success:
