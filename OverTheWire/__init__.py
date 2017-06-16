@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import argparse
 import logging
@@ -11,7 +11,7 @@ CONNECTIONS_YML = "connections.yml"
 
 # Logging setup
 logger = logging.getLogger("otw")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.CRITICAL)
 ch = logging.StreamHandler()
 ch.setFormatter(logging.Formatter("%(name)s|%(levelname)s|%(message)s"))
 ch.setLevel(logging.INFO)
@@ -29,9 +29,9 @@ def ensure_mkdir(path):
             pass
 
 class OTWLevel(object):
-    def __init__(self, wargame, levelNumber, givenPassword=None):
+    def __init__(self, wargame, levelNumber):
         self.wargame = wargame
-        self.levelNumber = levelNumber
+        self.levelNumber = int(levelNumber)
         
         self.levelName = "{0}{1}".format(self.wargame, self.levelNumber)
         self.logger = logging.getLogger("otw.{0}".format(self.levelName))
