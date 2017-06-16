@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import errno
 import logging
 import os
 import sys
@@ -11,7 +12,7 @@ CONNECTIONS_YML = "connections.yml"
 
 # Logging setup
 logger = logging.getLogger("otw")
-logger.setLevel(logging.CRITICAL)
+logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setFormatter(logging.Formatter("%(name)s|%(levelname)s|%(message)s"))
 ch.setLevel(logging.INFO)
@@ -25,7 +26,7 @@ def ensure_mkdir(path):
     try:
         os.mkdir(path)
     except OSError as e:
-        if e.errno != 17:
+        if e.errno != errno.EEXIST:
             pass
 
 class OTWLevel(object):
@@ -54,8 +55,8 @@ class OTWLevel(object):
             with open(self.passwordFile, "r") as passwordFileHandle:
                 password = passwordFileHandle.read().strip()
                 self.logger.debug("Retreived password '{0}'".format(password))
-        except OSError as e:
-            if e.errno == 2:
+        except IOError as e:
+            if e.errno == errno.ENOENT:
                 raise OTWException("No password file found")
         return password
 
