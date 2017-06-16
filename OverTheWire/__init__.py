@@ -30,7 +30,7 @@ def ensure_mkdir(path):
             pass
 
 class OTWLevel(object):
-    def __init__(self, wargame, levelNumber):
+    def __init__(self, wargame, levelNumber, configFile=CONNECTIONS_YML):
         self.wargame = wargame
         self.levelNumber = int(levelNumber)
         
@@ -38,7 +38,7 @@ class OTWLevel(object):
         self.logger = logging.getLogger("otw.{0}".format(self.levelName))
         self.passwordDirectory = os.path.join("passwords", self.wargame)
         self.passwordFile = os.path.join(self.passwordDirectory, self.levelName)
-        self.config = self._loadWargameConfiguration()
+        self.configFile = configFile
 
     def savePassword(self, newPassword):
         self.logger.debug("Saving down password")
@@ -46,8 +46,8 @@ class OTWLevel(object):
             ensure_mkdir(self.passwordDirectory)
             with open(self.passwordFile, "w") as passwordFileHandle:
                 passwordFileHandle.write(newPassword)
-        except OSError as e:
-            self.logger.warn("Error saving password; {1}".format(e))
+        except IOError as e:
+            raise OTWException("Error saving password to file; {0}".format(e))
 
     def loadPassword(self):
         self.logger.debug("Looking up password")
@@ -57,12 +57,12 @@ class OTWLevel(object):
                 self.logger.debug("Retreived password '{0}'".format(password))
         except IOError as e:
             if e.errno == errno.ENOENT:
-                raise OTWException("No password file found")
+                raise OTWException("No password file found; {0}".format(e))
         return password
 
-    def _loadWargameConfiguration(self):
+    def config(self):
         self.logger.debug("Loading configuration")
-        with open(CONNECTIONS_YML, "r") as stream_yml:
+        with open(self.configFile, "r") as stream_yml:
             try:
                 yml = yaml.load(stream_yml)
             except yaml.YAMLError as e:
@@ -80,12 +80,13 @@ class OTWLevel(object):
 
     def connectionCommand(self):
         self.logger.debug("Getting connection command")
-        target = "{0}@{1}".format(self.levelName, self.config["domain"])
+        config = self.config()
+        target = "{0}@{1}".format(self.levelName, config["domain"])
         command = ' '.join(["sshpass",
                     "-p", self.loadPassword(),
                     "ssh",
                     "-o", "StrictHostKeyChecking=no",
-                    "-p", str(self.config["port"]),
+                    "-p", str(config["port"]),
                     target])
         return command
 
@@ -109,7 +110,10 @@ def main():
     try:
         level = OTWLevel(args.wargame, args.level)
         if args.password:
-            level.savePassword(args.password)
+            try:
+                level.savePassword(args.password)
+            except OTWException as e:
+                logger.warn(e)
         connectionCommand = level.connectionCommand()      
     except OTWException as e:
         logger.error(e)
