@@ -7,3 +7,7 @@ leviathan:
 krypton:
     domain: krypton.labs.overthewire.org
     port: 2222
+narnia:
+    domain: narnia.labs.overthewire.org
+    port: 2226
+
