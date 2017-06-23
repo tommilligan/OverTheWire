@@ -182,7 +182,7 @@ The **length of the NOP sled is important**. Remember we are exploiting this pro
 Time for some arithmetic (in bytes):
 
 - Initial `buf` length (128) + Overflow length (16) = Total argument length required (**144**)
-- Total length (144) - Pointer length (4) - Shellcode length (25) = NOP Sled length (**115**)
+- Total length (144) - (Shellcode length (25) + Pointer length (4)) = NOP Sled length (**115**)
 
 
 ### Action breakdown
