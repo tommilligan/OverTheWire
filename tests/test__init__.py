@@ -39,8 +39,28 @@ class TestOTWLevelNormal(unittest.TestCase):
         command = self.level.connectionCommand()
         self.assertEqual(command, "sshpass -p eggs ssh -o StrictHostKeyChecking=no -p 2220 bandit0@bandit.labs.overthewire.org")
 
+    def test_otw_level_startCommand(self):
+        command = self.level.startCommand()
+        self.assertEqual(command, "sshpass -p eggs ssh -o StrictHostKeyChecking=no -p 2220 bandit0@bandit.labs.overthewire.org")
+
     def tearDown(self):
         self.level.savePassword("bandit0")
+
+class TestOTWLevelWeb(unittest.TestCase):
+    def setUp(self):
+        self.level = OverTheWire.OTWLevel("natas", 0)
+        self.level.savePassword("eggs")
+
+    def test_otw_level_browseCommand(self):
+        command = self.level.browseCommand()
+        self.assertEqual(command, "xdg-open http://natas0:eggs@natas0.natas.labs.overthewire.org/")
+
+    def test_otw_level_startCommand(self):
+        command = self.level.startCommand()
+        self.assertEqual(command, "xdg-open http://natas0:eggs@natas0.natas.labs.overthewire.org/")
+
+    def tearDown(self):
+        self.level.savePassword("natas0")
 
 class TestOTWLevelEdge(unittest.TestCase):
     def test_otw_level_loadPassword_not_exist(self):
