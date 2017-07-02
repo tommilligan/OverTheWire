@@ -30,6 +30,12 @@ def ensure_mkdir(path):
             pass
 
 class OTWLevel(object):
+    """
+    Object representing a user's request for a level
+
+    :param string wargame: Name of the wargame
+    :param int levelNumber: Level number as integer
+    """
     def __init__(self, wargame, levelNumber, configFile=CONNECTIONS_YML):
         self.wargame = wargame
         self.levelNumber = int(levelNumber)
@@ -41,6 +47,11 @@ class OTWLevel(object):
         self.configFile = configFile
 
     def savePassword(self, newPassword):
+        """
+        Save a new password for the level
+        
+        :param string newPassword: New password string
+        """
         self.logger.debug("Saving down password")
         try:
             ensure_mkdir(self.passwordDirectory)
@@ -50,6 +61,9 @@ class OTWLevel(object):
             raise OTWException("Error saving password to file; {0}".format(e))
 
     def loadPassword(self):
+        """
+        Return the password for the level. Note whitespace will be trimmed
+        """
         self.logger.debug("Looking up password")
         try:
             with open(self.passwordFile, "r") as passwordFileHandle:
@@ -61,6 +75,9 @@ class OTWLevel(object):
         return password
 
     def config(self):
+        """
+        Return configuration object for the level's wargame
+        """
         self.logger.debug("Loading configuration")
         with open(self.configFile, "r") as stream_yml:
             try:
@@ -79,6 +96,9 @@ class OTWLevel(object):
         return config
 
     def connectionCommand(self):
+        """
+        Return a string representing a bash sshpass command to conenct to the level
+        """
         self.logger.debug("Getting connection command")
         config = self.config()
         target = "{0}@{1}".format(self.levelName, config["domain"])
@@ -90,6 +110,29 @@ class OTWLevel(object):
                     target])
         return command
 
+    def browseCommand(self):
+        """
+        Return a string representing a bash xdg-open command to browse to the level
+        """
+        self.logger.debug("Getting browse command")
+        target = "http://{0}:{1}@{0}.{2}.labs.overthewire.org/".format(self.levelName, self.loadPassword(), self.wargame)
+        command = ' '.join(["xdg-open",
+                    target])
+        return command
+
+    def startCommand(self):
+        """
+        Return a string representing a bash command to start the level
+        
+        Smart wrapper for `connectionCommand` and `browseCommand`
+        """
+        self.logger.debug("Getting level start command")
+        if self.wargame in ['natas']:
+            command = self.browseCommand()
+        else:
+            command = self.connectionCommand()
+        return command
+
 def main_parser():
     logger.debug("Generating argument parser")
     parser = argparse.ArgumentParser(description="Connect to an OverTheWire wargame")
@@ -99,6 +142,8 @@ def main_parser():
                         help="Level number")
     parser.add_argument("-p", "--password",
                         help="Level password (defaults to passwords folder)")
+    parser.add_argument("--debug", action="store_true",
+                        help="Show DEBUG logging (defaults to INFO)")
     return parser
 
 def main():
@@ -107,6 +152,9 @@ def main():
     args = parser.parse_args()
     logger.debug("Got arguments {0}".format(args))
     
+    if args.debug:
+        ch.setLevel(logging.DEBUG)
+
     try:
         level = OTWLevel(args.wargame, args.level)
         if args.password:
@@ -114,14 +162,14 @@ def main():
                 level.savePassword(args.password)
             except OTWException as e:
                 logger.warn(e)
-        connectionCommand = level.connectionCommand()      
+        command = level.startCommand()      
     except OTWException as e:
         logger.error(e)
         sys.exit(1)    
 
     logger.info("Connecting to {0}...".format(level.levelName))
-    logger.debug("Printing '{0}'".format(connectionCommand))
-    print(connectionCommand)
+    logger.debug("Printing '{0}'".format(command))
+    print(command)
     logger.debug("Main completed")
 
 if __name__ == "__main__":
