@@ -53,8 +53,3 @@ class TestOTWLevelEdge(unittest.TestCase):
         level.passwordFile = '/no-permissions-here'
         with self.assertRaises(OverTheWire.OTWException):
             level.savePassword("spam")
-
-class TestOTWMainParser(unittest.TestCase):
-    def test_otw_main_parser_compiles(self):
-        parser = OverTheWire.main_parser()
-        self.assertIsInstance(parser, argparse.ArgumentParser)

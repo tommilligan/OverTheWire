@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PYTHON_SCRIPT="OverTheWire/__init__.py"
+PYTHON_SCRIPT="OverTheWire/cli.py"
 
 # Handle help seperately, as it appears on stdout with exit code 0
 # If any option matches ".*-h.*" then treat as asking for help
