@@ -1,5 +1,14 @@
 # OverTheWire
 
+[![PyPI](https://img.shields.io/pypi/v/OverTheWire.svg)](https://pypi.python.org/pypi/OverTheWire)
+[![PyPI](https://img.shields.io/pypi/pyversions/OverTheWire.svg)](https://pypi.python.org/pypi/OverTheWire)
+[![Documentation Status](https://readthedocs.org/projects/OverTheWire/badge/?version=master)](http://OverTheWire.readthedocs.io/en/master/?badge=master)
+[![license](https://img.shields.io/github/license/tommilligan/OverTheWire.svg)](https://pypi.python.org/pypi/OverTheWire)
+
+[![Travis branch](https://img.shields.io/travis/tommilligan/OverTheWire/develop.svg)](https://travis-ci.org/tommilligan/OverTheWire)
+[![codecov](https://codecov.io/gh/tommilligan/OverTheWire/branch/develop/graph/badge.svg)](https://codecov.io/gh/tommilligan/OverTheWire)
+[![Requirements Status](https://requires.io/github/tommilligan/OverTheWire/requirements.svg?branch=develop)](https://requires.io/github/tommilligan/OverTheWire/requirements/?branch=develop)
+
 Working notes and utilities for http://overthewire.org/
 
 
