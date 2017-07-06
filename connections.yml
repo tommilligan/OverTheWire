@@ -10,4 +10,7 @@ krypton:
 narnia:
     domain: narnia.labs.overthewire.org
     port: 2226
+behemoth:
+    domain: behemoth.labs.overthewire.org
+    port: 2221
 
