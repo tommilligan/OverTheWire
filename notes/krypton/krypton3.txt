@@ -1,0 +1,52 @@
+XOR is vulnerable to multiple message decryption, as XOR is reversible.
+
+e.g.
+
+SECRET = 01010101
+
+MESSG1 = 11110000
+MESSG2 = 00001111
+
+CIPHR = SECRET XOR MESSG
+
+CIPHR1 = 10100101
+CIPHR2 = 01011010
+
+CIPHRX = CIPHR1 XOR CIPHR2
+
+CIPHRX = 11111111
+
+Crib guess MESSG1 = 11??????
+XOR with CIPHRX= 00??????
+From the response I guess my crib is right, then try to extend it
+
+
+Caeser cipher?
+
+ABCDEF
+FBEDAC
+
+SECRET = FBEDAC
+
+MESSG1 = DEFACE
+MESSG2 = BEEFED
+
+CIPHR1 = DACFEA
+CIPHR2 = BAACAF
+
+CIPHRX = not possible
+
+but, crib method can still be used!
+as letters are mapped 1:1, we can use other messages to independantly check a crib guess
+
+I guess MESSG2 = BEEF??
+
+therefor, cipher is
+
+?B??EF
+?B??AC
+
+this would make MESSG1 = ?EFA?E
+
+if this looks good, we accept the crib, repeat to extend
+
